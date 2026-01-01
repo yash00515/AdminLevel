@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Page</title>
+    <style>
+      form {
+        border: 2px solid black;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      button{
+        padding: 15px;
+        width: 200px;
+        margin-top: 20px;
+      }
+
+      h3
+      {
+        color: rgb(75, 72, 72);
+      }
+
+      input {
+        width: 700px;
+        height: 80px;
+        font-size: 30px;
+      }
+
+      section{
+        border: 2px solid blue;
+        padding: 20px;
+        margin: 30px;
+      }
+
+      #parent {
+        border: 2px solid black;
+        margin: 10px;
+        padding: 20px;
+        display: grid;
+
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      img{
+        height: 200px;
+        width: 200px;
+      }
+
+    </style>
+  </head>
+  <body>
+    <h1>
+      <center><u>Product Form</u></center>
+    </h1>
+    <form id="form">
+      <input
+        id="title"
+        type="text"
+        placeholder="enter product name"
+        name="title"
+      />
+      <input id="price" type="number" placeholder="enter price" name="price" />
+      <input
+        id="description"
+        type="text"
+        placeholder="enter product description"
+        name="description"
+      />
+      <input id="img" type="text" placeholder="enter image link" name="img" />
+
+      <button id="button" type="submit">submit</button>
+    </form>
+
+    <h1>
+      <center><u>Products List</u></center>
+    </h1>
+    <div id="parent"></div>
+
+    <script>
+      let id =  null;
+      
+      // Products Show Home Page
+      const ui = (products)=>{
+         products.map((ele)=>{
+          let section = document.createElement("section");
+
+          let img = document.createElement("img");
+          img.src = ele.img;
+          let title = document.createElement("h1");
+          title.innerText = ele.title;
+          let desc = document.createElement("h3");
+          desc.innerText = ele.description;
+          let price = document.createElement("h2");
+          price.innerText = ele.price;
+
+          let btn1 = document.createElement("button");
+          let btn2 =  document.createElement("button");
+
+          btn1.innerText = "Delete";
+          btn2.innerText = "Update";
+
+          btn1.addEventListener("click", ()=>{Delete(ele._id)})
+          btn2.addEventListener("click", ()=>{handleUpdate(ele)})
+
+          section.append(img, title, price, desc, btn1, btn2);
+
+          let parent = document.getElementById("parent");
+          parent.append(section);
+         })
+      }
+
+      const Delete = (id) =>{
+          fetch(`/product/delete/${id}`, {
+            method:"DELETE"
+          }).then(()=>{
+            get();
+            window.location.reload();
+          })
+      }
+
+      const handleUpdate = (ele) =>{
+          document.getElementById("title").value = ele.title;
+          document.getElementById("img").value = ele.img;
+          document.getElementById("description").value = ele.description;
+          document.getElementById("price").value = ele.price;
+
+          document.getElementById("button").innerText = "update";
+          id = ele._id;
+
+      }
+
+      const Add = (product) => {
+        fetch("/product/create",{
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify(product)
+            }).then(()=>{
+              get();
+              window.location.reload();
+            })
+      };
+
+       const Update = (product) => {
+        fetch(`/product/update/${id}`,{
+                method:"PATCH",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify(product)
+            }).then(()=>{
+              get();
+              window.location.reload();
+            })
+      };
+
+      const get = async()=>{
+        let req = await fetch("/product/product");
+        let res = await req.json();
+
+        ui(res);
+      }
+      get();
+
+      document.getElementById("form").addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        let product = {
+          title: document.querySelector("#title").value,
+          price: document.querySelector("#price").value,
+          description: document.querySelector("#description").value,
+          img: document.querySelector("#img").value,
+        };
+
+        let button = document.getElementById("button").innerText === "submit";
+
+        if(button)
+        {
+          Add(product);
+        }else{
+          Update(product);
+        }
+
+        
+      });
+    </script>
+  </body>
+</html>

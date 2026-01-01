@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password</title>
+    <style>
+        body
+        {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+            color: white;
+        }
+
+        form
+        {
+            display: flex;
+            border: 3px solid white;
+            padding: 10px;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        input{
+            width: 400px;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+   <div>
+         <h1><u>Forgot Password</u></h1>
+
+         <form method="POST" action="/forgot">
+            <input type="text" name="email" placeholder="enter the email address">
+            <button type="submit">Submit</button>
+         </form> <br><br><br>
+
+          <form method="POST" action="/verify">
+            <input type="text" name="otp" placeholder="Enter OTP">
+            <button type="submit">Submit</button>
+         </form>
+
+   </div>
+</body>
+</html>
